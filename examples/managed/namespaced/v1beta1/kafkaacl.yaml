@@ -41,8 +41,8 @@ metadata:
 spec:
   forProvider:
     capacityConfig:
-      memoryBytes: 3221225472
-      vcpuCount: 3
+      memoryBytes: "3221225472"
+      vcpuCount: "3"
     gcpConfig:
       accessConfig:
         networkConfigs:

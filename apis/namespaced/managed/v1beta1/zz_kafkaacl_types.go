@@ -78,6 +78,28 @@ type KafkaACLInitParameters struct {
 	// Structure is documented below.
 	ACLEntries []ACLEntriesInitParameters `json:"aclEntries,omitempty" tf:"acl_entries,omitempty"`
 
+	// The ID to use for the acl, which will become the final component of the acl's name. The structure of aclId defines the Resource Pattern (resource_type, resource_name, pattern_type) of the acl. aclId is structured like one of the following:
+	// For acls on the cluster: cluster
+	// For acls on a single resource within the cluster: topic/{resource_name} consumerGroup/{resource_name} transactionalId/{resource_name}
+	// For acls on all resources that match a prefix: topicPrefixed/{resource_name} consumerGroupPrefixed/{resource_name} transactionalIdPrefixed/{resource_name}
+	// For acls on all resources of a given type (i.e. the wildcard literal '*”): allTopics (represents topic/*) allConsumerGroups (represents consumerGroup/*) allTransactionalIds (represents transactionalId/*).
+	ACLID *string `json:"aclId,omitempty" tf:"acl_id,omitempty"`
+
+	// The cluster name.
+	// +crossplane:generate:reference:type=github.com/upbound/provider-gcp/v2/apis/namespaced/managed/v1beta1.KafkaCluster
+	Cluster *string `json:"cluster,omitempty" tf:"cluster,omitempty"`
+
+	// Reference to a KafkaCluster in managed to populate cluster.
+	// +kubebuilder:validation:Optional
+	ClusterRef *v1.NamespacedReference `json:"clusterRef,omitempty" tf:"-"`
+
+	// Selector for a KafkaCluster in managed to populate cluster.
+	// +kubebuilder:validation:Optional
+	ClusterSelector *v1.NamespacedSelector `json:"clusterSelector,omitempty" tf:"-"`
+
+	// ID of the location of the Kafka resource. See https://cloud.google.com/managed-kafka/docs/locations for a list of supported locations.
+	Location *string `json:"location,omitempty" tf:"location,omitempty"`
+
 	// The ID of the project in which the resource belongs.
 	// If it is not provided, the provider project is used.
 	Project *string `json:"project,omitempty" tf:"project,omitempty"`
@@ -88,6 +110,13 @@ type KafkaACLObservation struct {
 	// The acl entries that apply to the resource pattern. The maximum number of allowed entries is 100.
 	// Structure is documented below.
 	ACLEntries []ACLEntriesObservation `json:"aclEntries,omitempty" tf:"acl_entries,omitempty"`
+
+	// The ID to use for the acl, which will become the final component of the acl's name. The structure of aclId defines the Resource Pattern (resource_type, resource_name, pattern_type) of the acl. aclId is structured like one of the following:
+	// For acls on the cluster: cluster
+	// For acls on a single resource within the cluster: topic/{resource_name} consumerGroup/{resource_name} transactionalId/{resource_name}
+	// For acls on all resources that match a prefix: topicPrefixed/{resource_name} consumerGroupPrefixed/{resource_name} transactionalIdPrefixed/{resource_name}
+	// For acls on all resources of a given type (i.e. the wildcard literal '*”): allTopics (represents topic/*) allConsumerGroups (represents consumerGroup/*) allTransactionalIds (represents transactionalId/*).
+	ACLID *string `json:"aclId,omitempty" tf:"acl_id,omitempty"`
 
 	// The cluster name.
 	Cluster *string `json:"cluster,omitempty" tf:"cluster,omitempty"`
@@ -130,6 +159,14 @@ type KafkaACLParameters struct {
 	// +kubebuilder:validation:Optional
 	ACLEntries []ACLEntriesParameters `json:"aclEntries,omitempty" tf:"acl_entries,omitempty"`
 
+	// The ID to use for the acl, which will become the final component of the acl's name. The structure of aclId defines the Resource Pattern (resource_type, resource_name, pattern_type) of the acl. aclId is structured like one of the following:
+	// For acls on the cluster: cluster
+	// For acls on a single resource within the cluster: topic/{resource_name} consumerGroup/{resource_name} transactionalId/{resource_name}
+	// For acls on all resources that match a prefix: topicPrefixed/{resource_name} consumerGroupPrefixed/{resource_name} transactionalIdPrefixed/{resource_name}
+	// For acls on all resources of a given type (i.e. the wildcard literal '*”): allTopics (represents topic/*) allConsumerGroups (represents consumerGroup/*) allTransactionalIds (represents transactionalId/*).
+	// +kubebuilder:validation:Optional
+	ACLID *string `json:"aclId,omitempty" tf:"acl_id,omitempty"`
+
 	// The cluster name.
 	// +crossplane:generate:reference:type=github.com/upbound/provider-gcp/v2/apis/namespaced/managed/v1beta1.KafkaCluster
 	// +kubebuilder:validation:Optional
@@ -144,8 +181,8 @@ type KafkaACLParameters struct {
 	ClusterSelector *v1.NamespacedSelector `json:"clusterSelector,omitempty" tf:"-"`
 
 	// ID of the location of the Kafka resource. See https://cloud.google.com/managed-kafka/docs/locations for a list of supported locations.
-	// +kubebuilder:validation:Required
-	Location *string `json:"location" tf:"location,omitempty"`
+	// +kubebuilder:validation:Optional
+	Location *string `json:"location,omitempty" tf:"location,omitempty"`
 
 	// The ID of the project in which the resource belongs.
 	// If it is not provided, the provider project is used.
@@ -190,6 +227,8 @@ type KafkaACL struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.aclEntries) || (has(self.initProvider) && has(self.initProvider.aclEntries))",message="spec.forProvider.aclEntries is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.aclId) || (has(self.initProvider) && has(self.initProvider.aclId))",message="spec.forProvider.aclId is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.location) || (has(self.initProvider) && has(self.initProvider.location))",message="spec.forProvider.location is a required parameter"
 	Spec   KafkaACLSpec   `json:"spec"`
 	Status KafkaACLStatus `json:"status,omitempty"`
 }

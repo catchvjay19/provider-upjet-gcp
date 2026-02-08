@@ -471,6 +471,31 @@ func (in *KafkaACLInitParameters) DeepCopyInto(out *KafkaACLInitParameters) {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}
 	}
+	if in.ACLID != nil {
+		in, out := &in.ACLID, &out.ACLID
+		*out = new(string)
+		**out = **in
+	}
+	if in.Cluster != nil {
+		in, out := &in.Cluster, &out.Cluster
+		*out = new(string)
+		**out = **in
+	}
+	if in.ClusterRef != nil {
+		in, out := &in.ClusterRef, &out.ClusterRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.ClusterSelector != nil {
+		in, out := &in.ClusterSelector, &out.ClusterSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
 	if in.Project != nil {
 		in, out := &in.Project, &out.Project
 		*out = new(string)
@@ -529,6 +554,11 @@ func (in *KafkaACLObservation) DeepCopyInto(out *KafkaACLObservation) {
 		for i := range *in {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}
+	}
+	if in.ACLID != nil {
+		in, out := &in.ACLID, &out.ACLID
+		*out = new(string)
+		**out = **in
 	}
 	if in.Cluster != nil {
 		in, out := &in.Cluster, &out.Cluster
@@ -596,6 +626,11 @@ func (in *KafkaACLParameters) DeepCopyInto(out *KafkaACLParameters) {
 		for i := range *in {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}
+	}
+	if in.ACLID != nil {
+		in, out := &in.ACLID, &out.ACLID
+		*out = new(string)
+		**out = **in
 	}
 	if in.Cluster != nil {
 		in, out := &in.Cluster, &out.Cluster

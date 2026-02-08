@@ -21,6 +21,7 @@ spec:
       operation: WRITE
       permissionType: ALLOW
       principal: User:producer-client@my-project.iam.gserviceaccount.com
+    aclId: topic/mytopic
     clusterSelector:
       matchLabels:
         testing.upbound.io/example-name: cluster
